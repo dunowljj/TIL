@@ -18,8 +18,98 @@ HTTP 기본
 + TCP -> 1.1, 2 UDP -> 3
 ***
 
-## 2.1 HTTP 특징
+## 1.3. HTTP 특징(목차)
 - 클라이언트 서버 구조
 - 무상태 프로토콜(스테이스리스), 비연결성
 - HTTP 메세지
 - 단순함, 확장 가능
+***
+
+# 2. 클라이언트 서버 구조
+- 클라이언트는 요청 후 응답까지 무작정 기다림
+- 클라이언트와 서버의 개념적 분리, 이전에는 통합
+    - 독립적으로 진화 가능 -> 서로 몰라도 됨, 고도화?, 어떤 기술?
+***
+
+# 3. Stateful, Stateless
+## 3.1. Statless
+- 무상태 프로토콜
+- 중간에 서버가 바뀌어도 됨
+    - 무한 증설 가능
+    - 스케일 아웃(수평확장)에 유리 (ex. 이벤트페이지 대비 장비 확장)
+- 클라이언트의 추가 데이터 전송 발생
+- 중간에 서버에 문제가 생기면 다른 서버에 요청 가능
+
+## 3.2. Stateful
+- 문맥이 보전됨
+- 최소화하는게 좋음
+- 로그인(쿠키,세션) 기능
+- 중간에 서버에 문제가 생기면 에러/손실
+***
+
+# 4. 비 연결성
+## 4.1. 서버-클라이언트 연결의 유지
+- 연결을 유지하는 모델 
+    - 응답 후 연결 유지
+    - 한 서버가 여러 클라이언트와 연결 시 자원의 지속적 소모
+- 연결을 유지 x
+    - 요청&응답 후 연결 끊음
+    - 유지 자원을 최소화
+
+## 4.2.1. HTTP의 비연결성
+- 비연결성, 초 단위 이하 빠른 속도 응답 -> 실제로 동시처리는 많지 않음
+- 장점 : 효율적 서버 자원관리
+- 단점 : html, js, css, image 등 함께 다운로드
+
+## 4.2.2. 지속 연결(Persistent Connection)
+- 요즘은 지속 연결 사용
+-  연결이 내부 메커니즘에 따라 일정 시간 지속(보통 html 한 페이지 로드할 동안은 지속)
+- 2,3 버전에서 최적화 많이 됨
+- 기존 연결 흐름 : 연결 -> 요청/html -> 응답 -> 종료 -> 연결 -> 요청/js정보 -> 응답 ...
+- 지속 연결 흐름 : 연결 -> 요청/html 응답, 요청js 응답 ... 종료
+
+## 4.3. Stateless!
+- 상태유지를 최소화하는 설계를 하는 것이 대용량 트래픽 처리에 유리
+***
+
+# 5. HTTP 메세지
+- http message = start-line*(header-field CRLF)CRLF[ message-body ]
+    1. start-line
+    2. header-field
+    3. empty line
+    4. message body
+## 5.1. start-line
+### 5.1.1. 요청 메세지
+- start-line = **request-line**/status-line
+    - request-line = method SP(공백) request-target SP HTTP-version CRLF
+        - HTTP 메서드
+        - 요청 대상
+        - HTTP 버전
+### 5.1.2. 응답 메세지
+- start-line = request-line/**status-line**
+    - status-line = HTTP vesrion SP status-code SP reason-pharase CRLF
+        - HTTP 버전
+        - HTTP 상태코드
+            - 200 성공, 400 클라이언트 요청 오류, 500 서버 내부 오류
+        - 이유 문구 : 사람이 이해할 수 있는 짧은 글
+
+## 5.2. header-field
+- header-field = field-name":" OWS field-value OWS 
+    - HTTP 전송에 모든 부가정보, 바디를 제외한 모든 메타데이터
+    - field-name : 대소문자 구분 안함 
+    - OWS : 띄어쓰기 허용, 스펙에 안적힌 부분은 붙여야 함
+    - Content-Type(메세지 바디 내용), Content-Length(크기), 압축, 인증, 브라우저 정보, 서버 어플 정보, 캐시 관리 정보 등
+## 5.3 empty line(CRLF)
+- 깃 맥호환할때 보던 개행관련 용어 같은데 찾아보고 수정합시다.
+## 5.4 message body
+- 실제 전송할 데이터
+- byte로 표현할 수 있는 모든 데이터
+***
+
+## 6.
+- http는 단순하고 확장성
+- 스펙 읽어볼만..
++ 할일
+    + 메시지 스펙 1.1 읽어보기
+    + 메시지 구조 안보고 대략적으로 그려보기
+    + CRLF 서칭
