@@ -1,4 +1,7 @@
+URI와 웹 브라우저 요청 흐름
+=========
 # 1. URI(Uniform Resource Identifier)
+
 ## 1.1. URI, URN, URL 구분
 - URI에 나머지 둘이 포함된다.
 - identifier, name, locator
