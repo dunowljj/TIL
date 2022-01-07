@@ -200,7 +200,8 @@ StringBuffer sb2 = sb.append("ZZ");
 # 5. Number 클래스
 ## 5.1. 설명
 - 숫자형 멤버변수를 가진 wrapper 클래스들의 조상, 모든 숫자와 관련된 래퍼 클래스들의 조상
-- BigIntegerm : long으로 못다루는 큰 범위 정수,  BigDecimal : double로도 못다루는 큰 범위 부동 소수점; 도 포함
+- BigInteger : long으로 못다루는 큰 범위 정수
+- BigDecimal : double로도 못다루는 큰 범위 부동 소수점; 도 포함
 - 객체가 가지고 있는 값을 숫자와 관련된 기본형으로 반환하여 반환하는 메서드들을 정의(353p 하단 int가 기본?)
 ## 5.2. 문자열 숫자로 변환
 ```
