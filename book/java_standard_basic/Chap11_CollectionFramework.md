@@ -174,7 +174,7 @@ List list = new ArrayList(Arrays.asList(1,2,3,4,5));
 - 기본 정렬기준을 구현하는데 사용
 - 구현 시 정렬이 가능하다는 의미. 주로 래퍼클래스들이 오름차순 정렬로 구현되어 있음
 - int compareTo(Object o);
-- String의 Comparable구현은 유니코드순으로 오름차순 정렬된다.(공백, 숫자, 대문자, 소문자)
+- String의 Comparable구현은 유니코드순으로 오름차순 정렬된다.**(공백, 숫자, 대문자, 소문자)**
 ### 1.8.3. Arrays.sort
 - Comparator를 지정해주지 않으면 저장하는 객체에 구현된 내용에 따라 정렬된다.
 - String.CASE_INSENSITIVE_ORDER); 사용 시 대소문자 구분없이 정렬된다.
@@ -207,6 +207,7 @@ Arrays.sort(arr, new DescComp());
 - set.size()로 for문 실행조건 넣어서 로또번호 만들기
 + HashSet에 내용이 같은 다른 객체를 집어넣으면 중복처리가 되지 않는다
 -> equals()와 hashCode()를 오버라이딩 하면 내용으로 비교 가능; 두개 다 호출하므로 두개 다 오버라이딩 해야한다.
+***
 
 ## 1.10. TreeSet
 ### 1.10.1. 설명
@@ -231,3 +232,65 @@ Arrays.sort(arr, new DescComp());
 - NavigableSet headSet(Object toElement, boolean inclusive)
 - Object pollFirst()/pollLast() : 첫번째/마지막 요소(제일 작은/큰)를 반환 (제거까지)
 - Object first()/last() : 정렬된 순서에서 첫/마지막 객체를 반환(반환만)
+- SortedSet subSet(Object fromElement, Object toElement) : 범위 검색, 끝 범위 불포함
+- NavigableSet subSet(Object fromElement, boolean fromInclusive, ObjecttoElement, boolean to incluseive)
+***
+
+## 1.11. HashSet과 Hashtable
+### 1.11.1. 설명
+- Hashtable은 Vector와 같은 맥락
+- 해싱을 사용하기때문에 많은 양의 데이터를 검색하는데 있어서 뛰어난 성능
+- HashMap은 Entry라는 내부 클래스를 정의(안에 key,value)하고, 다시 Entry타입의 배열을 선언하고 있음.
+- key-value 모두 Object 형태로 저장할 수 있지만, 키는 주로 String 대문자 또는 소문자로 통일해서 사용함
+- key값 겹치면 데이터 덮어써짐
+### 1.11.2. 메서드
+- boolean containsKey/Value(Object key/value) : 객체에 HashMap에 저장되어 있는 키/값이 있는지 알려준다.
+- Set entrySet()/keySet() : 저장된 키와 값을 엔트리(키와 값의 결합)의 형태로 Set에 저장해서 반환 / 모든 키가 저장된 Set반환
+- void putAll(Map m) : Map에 저장된 모든 요소 저장
+- Object get(Object key)
+- Object getOrDefault(Object key, Object defaultValue)
+- Collection values() : HashMap에 저장된 모든 값을 컬렉션의 형태로 변환
+***
+
+## 1.12. Collections의 메서드
+- 배열엔 Arrays, 컬렉션엔 Collections
+- fill(), copy(), sort(), binarySearch)
+### 1.12.1. 컬렉션의 동기화
+- 멀티쓰레드에서 하나의 객체에 여러 쓰레드가 동시에 접근 할 수 있기 때문에 데이터의 무결성을 유지해야 한다. -> 동기화 필요
+- Vector, Hashtable : **자체적 동기화**가 되어 있어 멀티쓰레드 프로그래밍이 아닌 경우 불필요한 기능으로 성능 저하
+- ArrayList, HashMap : 자체적 동기화 대신 **동기화 메서드**를 제공한다.
+```
+//메서드 형식
+static Collection synchronizedCollection(Collection c)
+static List synchronizedList(List list)
+...
+//사용
+Lisy synList = Collections.synchronizedList(new ArrayList(...));
+```
+### 1.12.2 변경불가 컬렉션
+- 컬렉션에 저장된 데이터를 보호하기 위해 변경 불가(읽기 전용)으로 만들기
+- 주로 멀티 쓰레드 프로그래밍에서 여러 쓰레드가 하나의 컬렉션 공유 시 손상 가능성
+```
+static Colleciont unmodifiableCollection(Collection c)
+...
+```
+### 1.12.3. 싱글톤 컬렉션
+- 단 하나의 객체만을 저장하는 컬렉션을 만들어야 하는 경우
+```
+static List singletonList(Object o)
+static List singleton(Object o) 
+static List singletonMap(Object key, Object value)
+```
+- 반환된 컬렉션 변경 불가
+### 1.12.4. 단일 컬렉션
+- 한 종류의 객체만 저장하는 컬렉션
+```
+//메서드 형식
+static Collection checkedCollection(Collection c, Class type)
+...
+//사용 - 두번째 매개변수에 저장할 객체의 클래스 지정
+List list = new ArrayList();
+List checkedList = checkedList(list, String.class) //String만 저장 가능
+```
+
+### 448p 그림
