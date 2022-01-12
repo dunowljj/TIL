@@ -2,7 +2,7 @@
 ========
 # 1. 지네릭스(Generics)
 ## 1.1. 설명
-- 컴파일 시의 타입 체크를 해주는 기능
+- 다양한 타입의 객체들을 다루는 **메서드**나 **컬렉션 클래스**에 컴파일 시의 타입 체크를 해주는 기능
 - **타입의 안정성을 제공**
 - **타입체크**와 **형변환**을 생략 가능 -> 코드가 간결해짐
 - 형변환 생략 ? : 원래는 Object형으로 반환되던거 바꿔주니 안해도 됨
@@ -71,7 +71,7 @@ static <T> void sort(List<T> list, Comparator<? super T> c)
 ```
 - 지네릭 클래스가 아닌 클래스에도 정의될 수 있다.
 - 주의! 지네릭 **클래스에 정의된** 타입 매개변수 **T**와 **매개변수에 정의된** 타입 매개변수 **T**는 다르다.
-- static**멤버**에는 타입 매개변수를 사용할 수 없지만, **메서드**에 지네릭 타입을 선언하고 사용하는 것은 가능하다.
+- **static멤버**에는 타입 매개변수를 사용할 수 없지만, **메서드**에 지네릭 타입을 선언하고 사용하는 것은 가능하다.
 - 메서드에 선언된 지네릭 타입은 **메서드 내에서만 지역적으로 사용**될 것이므로 메서드가 static이건 아니건 상관 없음
 + 호출 시 Juicer.\<Fruit>makeJuice(fruitBox)와 같이 타입 변수에 타입 대입해서 호출
 + 생략해도 컴파일러가 선언부를 통해 추정해준다.
@@ -255,7 +255,96 @@ list.add(obj);                      //여기서 경고 발생하지만 억제됨
 
 ## 3.5. 애너테이션 요소
 - 애너테이션 내에 선언된 메서드를 **애너테이션의 요소**라고 함
-- 반환값이 있고 매개변수는 없는 추상 메서드의 형태에 상속을 통해 구현하지 않아도 됨
-- 적용할 때 이 요소들의 값을 빠짐없이 지정해주어야 한다.(이름 같이 적어서 순서는 무관)
+- 애너테이션의 요서는 **반환값이 있고** **매개변수는 없는** 추상 메서드의 형태에 상속을 통해 구현하지 않아도 됨
+- 적용할 때 이 요소들의 값을 **빠짐없이 지정**해주어야 한다.(이름 같이 적어서 순서는 무관) - 494p!!
+- 기본값이 있는 요소는 애너테이션을 적용할 때 값을 지정하지 않으면 기본값이 사용된다.
+```
+@interface TestInfo(){
+    int count default 1;
+}
+@TestInfo //@TestInfo(count=1)과 동일
+public class NewClass{...}
+```
+- 애너테이션 요소가 **오직 하나**뿐이고 이름이 `value`인 경우, 애너테이션을 적용할 때 요소의 이름을 생략하고 **값만 적어도** 된다.
+```
+@interface TestInfo(){
+    String value();
+}
+
+@TestInfo("passed") //@TestInfo(vlaue="passed")와 동일
+class NewClass{...}
+```
+
+- 요소 타입이 **배열**인 경우, 괄호{}를 사용해서 여러 개의 값을 지정할 수 있다.
+```
+@inteface TestInfo(){
+    String[] testTools();
+}
+
+@Test(testTools={"JUnit", "AutoTester"})
+@Test(testTools="JUnit")                //하나일때 괄호 생략 가능
+@Test(testTools={})                     //값이 없을때는 괄호 반드시 필요
+```
+
+-기본값 지정할 때 마찬가지로 괄호{} 사용 가능
+```
+@inteface TestInfo(){
+    String[] info() default {"aaa","bbb"};
+    String[] info2() default "ccc";
+}
+
+@TestInfo           //TestInfo(info={"aaa","bbb"}, info2="ccc")
+@TestInfo(info2={}) //TestInfo(info={"aaa","bbb"}, info2={})
+class NewClass {...}
+```
+
+- 요소의 타입이 배열일 때도 요소의 이름이 `value`이면 요소 이름 생략 가능
+```
+@interface SuppressWarning{
+    String[] value();
+}
+
+@SuppressWarnings({"deprecation", "unchecked"})
+class NewClass{...}
+```
+
+## 3.6. 모든 애너테이션의 조상
+- Annotation
+- 상속이 허용되지 않아 명시적으로 지정 불가(extends)
+- 일반적인 인터페이스로 정의되어 있음
+```
+package java.lang.annotation;
+
+public interface Annotation {
+    boolean equals(Object obj);
+    int hashCode();
+    String toString();
+
+    Class<? extends Annotation> annotationType();
+}
+```
+- 위처럼 정의되어 있기 때문에 equals(), hashCode(), toString()과 같은 메서드 호출 가능
+
+## 3.7. 마커 애너테이션
+- 값을 지정할 필요가 없는 경우, 애너테이션의 요소를 하나도 정의하지 않을 수 있다.
+- Serializable, Cloneable처럼 요소가 하나도 정의되지 않은 애너테이션
+
+## 3.8. 애너테이션 요소의 규칙
+    1. 요소의 타입은 기본형, String, enum, 애너테이션, Class만 허용된다.
+    2. () 안에 매개변수를 선언할 수 없다.
+    3. 예외를 선언할 수 없다.
+    4. 요소를 타입 매개변수로 정의할 수 없다.
+- 예시 499p
+### 활용 예제
+- 모든 클래스 파일은 클래스 로더에 의해 메모리에 올라갈 때, 클래스에 대한 정보가 담긴 객체를 생성하는데, 이 객체를 **클래스 객체**라고 한다.
+- **클래스 객체**에는 해당 클래스에 대한 모든 정보가 있고, 애너테이션의 정보도 포함되어 잇다.
+- getAnnotation() :  모든 애너테이션을 배열로 받아올 수 있고, 매개변수로 정보를 얻고자 하는 애너테이션을 지정할 수 있다.
+
+### 연습문제
+- 12-3 다시보기!!
+- 12-4도 다시보기 : 지네릭 메서드와 컬렉션 클래스에 붙이는 지네릭스를 구분하자
+    - **static멤버**에는 타입 매개변수를 사용할 수 없지만, **메서드**에 지네릭 타입을 선언하고 사용하는 것은 가능하다.
+
+
 ### 의문
 리스트에 다양한 자식 클래스들 처리도 컴파일러가 각각 해주는건지?
