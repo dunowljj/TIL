@@ -5,7 +5,7 @@ Generics
 # 2. Generic Types
 - 지네릭 타입은 타입에 대해 매개변수화된 지네릭 클래스 또는 인터페이스이다.
 ## A Simple Box Class (예시)
-- 논제네릭 모든 타입의 객체에서 작동하는 `Box`클래스를 설명하면서 시작한다. 해당 클래스는`set`메서드와 `get`메서드만 제공한다.
+- 논제네릭 모든 타입의 객체에서 작동하는 `Box`클래스를 예시로 설명하면서 시작한다. 해당 클래스는`set`메서드와 `get`메서드만 제공한다.
 ```
 public class Box {
     private Object object;
@@ -24,3 +24,35 @@ public class Box {
 ```
 class name<T1, T2, ..., Tn> { /* ... */ }
 ```
+- \<>로 구분되는 타입 매개변수 영역은 클래스 이름을 따라온다. 타입 파라미터를(또는 타입변수)T1,T2...,and Tn으로 명시한다.
+- `Box`를 지네릭을 사용하도록 변경하려면, 너는 `public class Box` 에서 `public class box<T>`로 바꿈으로써 지네릭 타입을 선언해야 한다. 이것은 어느 클래스에서든 사용될 수 있는 타입 변수를 소개한다.
+- 위와 같은 변화에 의해 `Box`클래스는 이렇게 된다:
+```
+/**
+*Generic vesion of the Box class
+*@param <T> the type of the value being boxed
+*/
+public class Box<T> {
+    //T stands for "Type"
+    private T t;
+
+    public void set(T t) {this.t = t;}
+    public T get() {return t;}
+}
+```
+- 보이듯이 모든 나타나는 모든 `Object`는 `T`로 대체되었다. 타입 변수는 primitive만 아니라면 너가 지정할 수 있다. 어떤 클래스 타입, 어떤 인터페이스 타입, 어떤 배열 타입, 심지어 다른 변수 타입도 가능하다.
+***
+
+## Type Parameter Naming Conventions
+- 관례에 의하면, 매개변수 이름들은 대문자로 한 글자이다. 이 관례는 너가 이미 알고 있는 naming convention과 현저한 대조를 보인다. 그리고 적절한 이유를 가지고 있다. 이 관례가 없다면 **타입 변수**와 **일반적인 클래스 혹은 인터페이스** 사이의 차이를 말하기 힘들 것이다.
+- 주로 사용되는 이름들은 이러하다:  
+    - E - Element (자바 컬렉션 프레임웍에서 광범위하게 사용)
+    - K - Key
+    - N - Number
+    - T - Type
+    - V - Value
+    - S,U,V etc. -2nd, 3rd, 4th types
+- 이 이름들이 JAVA SE API와 글의 나머지 내용에서 사용되는 것을 볼 수 있을 것이다.
+***
+
+## Invoking and Instantiating a Generic Type

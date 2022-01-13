@@ -177,6 +177,7 @@ static void sleep(long millis, int nanos)
 - 일시정지 상태에서 interrupt()가 호출되면, InterruptedException이 발생되어 실행대기 -> 항상 try-catch문으로 예외처리 해줘야 함
 - try-catch문까지 포함하는 새로운 메서드 만들기도 함
     - void delay(long milis)...
+- **항상 실행중인 쓰레드에 대해 작동**
 ### 9.2.2. interrupt()
 - 진행 중인 쓰레드의 작업이 끝나기 전에 취소해야할 경우
     - 큰 파일 다운 시 너무 오래걸려서 중간에 포기하고 취소
