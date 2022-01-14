@@ -191,3 +191,233 @@ static <T> Stream<T> generate(Supplier<T> s)
 - `generate()`에 정의된 매개변수 타입은 `Supplier<T>`이므로 매개변수가 없는 람다식만 허용된다.
 - `iterate()`와 `generate()`에 의해 생성된 스트림을 기본형 스트림 타입의 참조변수로 다룰 수 없다.
 - 굳이 필요하다면 `mapToInt()`와 같은 메서드로 변환
+## 3.6. 파일과 빈 스트림
+### 파일
+- java.nio.file.Files 파일을 다루는데 필요한 유용한 메서드 제공
+```
+Stream<Path> Files.list(Path dir)
+```
+- `list()`는 지정 디렉토리에 있는 파일의 목록을 소스로 하는 스트림을 생성해서 반환
+```
+Stream<String> Files.lines(Path path)
+Stream<String> Files.lines(Path path, Charset cs)
+Stream<String> lines()
+```
+- **한 행을 요소**로 하는 스트림을 생성하는 메서드도 있다. 3번째 것은 `BufferedReader클래스`에 속한 것으로 **파일** 뿐만 아니라 **다른 입력대상**으로부터도 데이터를 **행단위**로 읽어올 수 있다.
+### 빈 스트림
+- 요소가 하나도 없는 빈 스트림 생성 가능
+- 연산 수행 결과가 하나도 없을때 null보다 빈 스트림을 반환하는 것이 낫다.
+```
+Stream emptyStream = Stream.empty();
+long count = emptyStream.count();
+```
+- `empty()` : 빈 스트림을 생성해서 반환
+- `count()` : 스트림 요소의 개수를 반환 -> 위 문장은 0
+***
+
+# 4. 스트림의 연산
+## 4.1. 설명
+- 중간 연산 : 연산결과를 스트림으로 반환, 중간 연산을 연속해서 연결 가능
+    - stream.distinct().limit(5).sorted().
+- 최종 연산 : 스트림의 요소를 소모하면서 연산을 수행. 단 한번만 연산이 가능
+    - forEach(~)
+## 4.2. 중간연산
+### skip(), limit()
+- 스트림 일부를 잘라낼 때 사용
+```
+Stream<T> skip(long n)
+Stream<T> limit(long maxSize)
+```
+- `skip()` : 처음 요소 n개를 건너뜀
+- `limit()` : 스트림 요소 개수를 제한
+- 기본형 스트림에도 정의되어 있고, 반환형은 기본형
+### fileter(), distinct()
+```
+Stream<T> filter(Predicate<? super T> predicate)
+Stream<T> distinct()
+```
+- `distinct()` : 스트림에서 중복된 요소 제거
+- `filter()` : 조건에 맞지 않는 요소 걸러냄
+### sorted()
+```
+Stream<T> sorted()
+Stream<T> sorted(Comparator<? super T> comparator)
+```
+- 스트림을 정렬할 때 사용
+- Comparator 미지정 시 요소의 기본 정렬 기준으로 정렬
+- Comparator대신 int값을 반환하는 람다식을 사용하는 것도 가능
+- 582p 하단 다양한 정렬 방법
+- naturalOrder, reserved, CASE_INSENSITIVE_ORDER ...
+### Comparator의 메서드
+- 많은 static, 디폴트 메서드들 모두 `Comparator<T>`를 반환, 가장 기본적인 메서드는 `comparing()`
+```
+comparing(Function<T, U> keyExtractor)
+comparing(Function<T, U> keyExtractor, Comparator<U> keyComparator)
+```
+- 스트림의 요소가 Comparable을 구현한 경우, 매개변수 하나짜리를 사용하면 되고 그렇지 않은 경우 매개변수로 정렬기준(Comparator)을 따로 지정해 줘야 한다.(582~583 참조)
+```
+comparingInt/Long/Double(ToInt/Long/DoubleFuction<T> keyExtractor)
+```
+- 비교대상이 기본형인 경우 `comparing()`대신 위의 메서드를 사용하면 오토박싱과 언박싱 과정이 없어서 더 효율적이다.
+- 정렬 조건 추가 시 `thenComparing()` 사용
+```
+studentStream.sorted(Comaprator.comparing(Student::getBan)
+    .thenComparing(Studnet::getTotalScore)
+    .thenComparing(Student::getName))
+    .forEach(System.out::println);
+```
+### map()
+- 원하는 필드만 뽑아내거나 특정 형태로 변환해야 할 때 `map()` 유용
+```
+Stream<R> map(Function<? super T,? etends R> mapper)
+```
+- 파일이름만 간단히 뽑기
+```
+Stream<String> filenameStream = fileStream.map(File::getName);
+filenameStream.forEach(System.out::println);
+```
+### peek()
+- 연산과 연산 사이에 올바르게 처리되었는지 확인하고 싶다면 사용
+- 중간 연산이라 스트림의 요소를 소모하지 않음
+### flatMap()
+- 스트림의 타입이 `<Stream<T[]>`인 경우 `Stream<T>`로 변환해야할 때 사용
+- Arrays.stream(T[])를 함께 사용한다고 치면,
+    - `map()` 사용 시
+        ```
+        Stream<Stream<String[]> strStrStrm = strArrStrm.map(Arrays::stream);
+        ```
+    - `map()`자리에 `flatmap()` 사용 시
+        - `Stream<String>` 형태 반환
+- 589p 예제 한번 더보기
+***
+
+## 4.3. Optional\<T>
+### 4.3.1. 설명
+- JDK 1.8부터 추가
+- T타입의 객체를 감싸는 래퍼 클래스
+- 모든 타입 객체를 담을 수 있다.
+```
+public final class Optional<T> {
+    private final T value;
+}
+```
+- `Optional객체`에 담아서 반환을 하면 정의된 메서드로 간단히 null체크 가능
+- NullPointerException이 발새하지 않는 보다 간결하고 안전한 코드 작성 가능
+### 4.3.2. 생성
+- 생성 시`of()` 또는 `ofNullable()` 사용
+- `of()`는 null일 때 NullPointerException이 발생 -> null 가능성 있으면 `ofNullable()` 사용
+```
+//생성
+String str = "abc";
+Optional<String> optVal = Optional.of(str);
+Optional<String> optVal = Optional.of("abc");
+Optional<String> optVal = Optional.of(new String("abc"));
+
+//null 차이
+Optional<String> optVal =  Optional.of(null);
+Optional<String> optVal =  Optional.ofNullable(null); //ok
+
+//초기화
+Optional<String> optVal =  null; //가능하나 바람직x
+Optional<String> optVal =  Optional.<String>empty();//빈 객체 초기화
+```
+### 4.3.3. `Optional<T>` 객체의 값 가져오기
+- `get()` : 저정된 값 가져옴 null 이면 NoSuchElementException
+- `orElse()` : null일때 대체할 값 지정
+```
+Optional<String> optVal = Optional.of("abc");
+String str1 = optVal.get();
+String str2 = optVal.orElse("");
+```
+- `orElse()`변형
+    - `orElseGet()` : null 대체 람다식 지정
+    - `orElseThrow()` :null일때 지정된 예외 발생
+```
+T orElseGet(Supplier<? extends T> other)
+T orElseThrow(Supplier<? extends x> exceptionSupplier)
+
+//사용
+String str3 = optVal2.orElseGet(String::new);
+String str4 = optVal2.orElseThrow(NullPointerException::new);
+```
+- `isPresent()` : Optional객체가 null일 경우 false 아니면 true 반환
+- `ifPresent(Consumer<T> block)` : 값이 있으면 람다식 실행, 없으면 실행x
+```
+Optional.ofNullable(str).ifPresent(System.out::println)
+```
+### 4.3.4. OptionalInt, OptionalLong, OptionalDouble
+- Optional에 저장된 값을 꺼낼 때 사용하는 메서드는 이름이 조금씩 다르다는 것에 주의(593참조)
+- 기본형 int의 기본값은 0이기 때문에 OptionalInt에 저장되는 값은 0이다.
+-> empty()로 선언한 객체와 0 저장한 객체 isPresent()로 구분 가능
+```
+OptionalInt opt = OptionalInt.of(0);
+OptionalInt opt2 = OptionalInt.empty();
+
+System.out.println(opt.isPresent());    //true
+System.out.println(opt.isPresent());    //false
+System.out.println(opt.equals(opt2));   //false
+```
+***
+## 4.4. 스트림의 최종 연산
+### 4.4.1. forEach()
+```
+void forEach(Conseumer<? super T> action)
+```
+### 4.4.2. 조건검사
+- `allMatch()` : 모두 일치하면 참
+- `anyMatch()` : 하나라도 일치하면 참
+- `noneMatch()` : 모두 불일치 시 참
+
+```
+boolean allMatch(Predicate<? super T> predicate)
+boolean anyMatch(Predicate<? super T> predicate)
+boolean noneMatch(Predicate<? super T> predicate)
+```
+- `findFirst()` : 스트림 요소 중 일치하는 첫 번째 것 반환
+    - 주로 `filter()`와 함께 조건에 맞는 스트림 요소 확인에 사용
+    - 병렬 스트림의 경우 대신에 `findAny()`사용해야 함
+```
+Optional<T> findFirst() //조건 일치하는 첫 요소 반환
+Optional<T> findAny() //조건 일치하는 요소 하나 반환(병렬스트림)
+```
+### 4.4.3. reduce()
+- 스트림의 요소를 줄여나가면서 연산을 수행하고 최종결과를 반환
+- 스트림의 요소가 하나도 없는 경우 초기값이 반환되므로 반환 타입이 T이다.
+```
+T reduce(T identity, BinaryOperator<T> accumulator)
+U reduce(U identity, BinaryOperator<U,T,U> accumulator, BinaryOperator<U> comnbiner))
+```
+- `combiner`는 병렬 스트림에 의해 처리된 결과를 합칠 때 사용하기 위해 사용
+- `count(), sum()`등은 내부적으로 모두 `reduce()`사용
+```
+int count = intStream.reduce(0, (a,b) -> a + 1);
+int sum = intStream.reduce(0, (a,b) -> a + b);
+int max = intStream.reduce(Integer.MIN_VALUE, (a,b) -> a>b  a:b);
+int min = intStream.reduce(Integer.MAX_VALUE, (a,b) -> a>b  a:b);
+```
+### 4.4.4. collect()
+- 복잡하지만 유용
+    • `collect()` : 스트림의 최종연산, 매개변수로 컬렉터를 필요로 함
+    • `Collector` : 인터페이스, 컬렉터는 이 인터페이스를 구현해야 함
+    • `Collectors` : 클래스, static메서드로 미리 작성된 컬렉터를 제공
+```
+Object collect(Collector collector)
+Object collect(Supplier supplier, BiConsumer accumulator, BiConsumer combiner)
+```
+### 4.4.5. 스트림을 컬렉션, 배열로 변환
+- `toCollection()`에 원하는 컬렉션의 생성자 참조를 매개변수로 넣으면 됨
+```
+List<String> names = stuStream.map(Student::getName).collect(Collectors.toList());
+ArrayList<String> list = names.stream().collect(Collectors.toCollection(ArrayList::new));
+```
+- Map은 어떤 필드를 키로 사용할지와 값으로 사용할지를 지정해줘야 한다.
+```
+Map<String,Person> map = personStream.collect(Collectors.toMap(p->p.getRegid(), p->p));
+```
+- regId를 키로, 값으로 Person객체를 저장
+- p->p 대신 Function.identity 사용 가능
+```
+Student[] stuNames = studentStream.toArray(Student[]::new); //ok
+Stduent[] stuNames = studentStream.toArray(); //error
+Object[] stuNames = studentStream.toArray();  //ok
+```
