@@ -231,7 +231,7 @@ Stream<T> limit(long maxSize)
 - `skip()` : 처음 요소 n개를 건너뜀
 - `limit()` : 스트림 요소 개수를 제한
 - 기본형 스트림에도 정의되어 있고, 반환형은 기본형
-### fileter(), distinct()
+### filter(), distinct()
 ```
 Stream<T> filter(Predicate<? super T> predicate)
 Stream<T> distinct()
@@ -409,7 +409,8 @@ Object collect(Supplier supplier, BiConsumer accumulator, BiConsumer combiner)
 ```
 List<String> names = stuStream.map(Student::getName).collect(Collectors.toList());
 ArrayList<String> list = names.stream().collect(Collectors.toCollection(ArrayList::new));
-```
+```  
+
 - Map은 어떤 필드를 키로 사용할지와 값으로 사용할지를 지정해줘야 한다.
 ```
 Map<String,Person> map = personStream.collect(Collectors.toMap(p->p.getRegid(), p->p));
@@ -421,3 +422,93 @@ Student[] stuNames = studentStream.toArray(Student[]::new); //ok
 Stduent[] stuNames = studentStream.toArray(); //error
 Object[] stuNames = studentStream.toArray();  //ok
 ```
+### 4.4.6. 스트림의 통계 counting(), summingInt()
+- 최종 연산들이 제공하는 통계 정보를 `collect()`로 똑같이 얻을 수 있음
+- `groupingBy()`와 함께 사용
+### 4.4.7. 스트림을 리듀싱 reducing()
+- IntStream에는 매개변수 3개짜리 collect()만 정의되어 있음
+    - `boxed()`를 통해 IntStream을 `Stream<Integer>`로 변환해야 매개변수 1개짜리 `collect()`를 쓸 수 있다.
+```
+Collector reducing(BinaryOperator<T> op)
+Collector reducing(T identity, BinaryOperator<T> op)
+Collector reducing(U identity, Function<T,U> mapper, BinaryOperator<U> op)
+```
+- 와일드 카드 생략한 내용
+- 세 번째 것은 map()과 reduce()하나로 합친 것 뿐
+### 4.4.8. 스트림을 문자열로 결합 joining()
+- 문자열 스트림의 모든 요소를 하나의 문자열로 연결해서 반환
+- 구분자, 접두사, 접미사 지정 가능
+- 스트림의 요소가 String이나 CharSequence의 자손인 경우에만 결합 가능 -> 요소가 문자열이 아닌 경우 먼저 `map()`으로 문자열로 변환
+- `map()`없이 스트림에 바로 `joining()`하면, 스트림의 요소에 `toString()`을 호출한 결과를 결합한다.
+## 4.5. 스트림의 그룹화와 분할
+### 4.5.1. 설명
+- 다른 연산 놔두고 왜 쓸까?
+- 그룹화 : 스트림의 요소를 **특정 기준**으로 그룹화
+- 분할 : 스트림의 요소를 **두 가지**, **지정된 조건**에 일치하는 그룹과 그렇지 않은 그룹으로 분할
+```
+Collector partitioningBy(Predicate predicate)
+Collector partitioningBy(Predicate predicate, Collector downstream)
+
+Collector groupingBy(Function classifier)
+Collector groupingBy(Function classifier, Collector downstream)
+Collector groupingBy(Function classifier, Supplier mapFactory, Collector downstream)
+```
+- 그룹화와 분할의 결과는 Map에 담겨 반환된다.
+### 4.5.2. 스트림의 분할 partitioningBy()
+```
+// 1. 기본 분할
+Map<Boolean, List<Student>> stuBySex = stuStream.collect(partitioningBy(Student::isMale));
+
+List<Student> maleStudent = stuBySex.get(true);
+List<Stduent> femaleStudent = stuBySex.get(false);
+```
+- `counting()`추가
+```
+// 2. 기본 분할 + 통계 정보
+Map<Boolen, Long> stuNumBySex =stuStream.collect(partitioningBy(Student::isMale, counting()))l
+
+System.out.println("남학생 수 :"+ stuNumBySex.get(true));
+System.out.println("여학생 수 :"+ stuNumBySex.get(false));
+```
+- 대신 `summingLong()`등 사용 가능
+```
+Map<Boolean, Optional<Student>> topScoreBySex = stuStream
+    .collect(
+        partitioningBy(Student::isMale, 
+            maxBy(comparingInt(Student::getScore))
+        )
+    );
+```
+- `maxBy()`의 반환타입이 `Optional<Student>`라서 출력 시 Optional의 toString() 값이 나온다.
+- `Optional<Student>`가 아닌 `Student`로 반환 결과를 얻으려면 `collectiongAndThen()`과 `Optional::get`을 함께 사용하면 된다.(607)
++ 성적이 150점 아래인 학생들을 불합격 처리? -> `partitioningBy()` 한번 더 사용해서 이중 분할하면 된다.
+```
+Map<Boolean, Map<Boolean, List<Student>>> failedStuBySex = stuStream
+    .collect(
+        partitioningBy(Student::isMale,
+            partitioningBy(s -> s.getScore() < 150)    
+        )
+    );
+List<Student> failedMaleStu = failedStuBySex.get(true).get(true);
+List<Student> failedFemaleStu = failedStuBySex.get(false).get(true);
+```
+
+### 4.5.3. 스트림의 그룹화 groupingBy()
+```
+Map<Integer, List<Student>> stuByBan = stuStream
+    .collect(groupingBy(Student::getBan)); //toList() 생략가능
+```
+- `groupingBy()`로 그룹화를 하면 기본적으로 `List<T>`에 담는다. 원한다면, toList()대신 toSet()이나 toCollection(HashSet::new)등 사용 가능
+    - 단 Map의 지네릭 타입 적절히 변경해야 함(611p)
+- `groupingBy()`여러 번 사용하여 **다수준 그룹화** 가능.
+- `mapping()`
+- 615~616참조
+### 그룹화
+- 반환되는 Map의 키 값 쌍을 잘 보자.
+- key -> 정렬 기준, groupingBy() 괄호 안의 반환값 기준 정렬
+- value -> 변수의 value값, List,Set 등 가능, Long 등 쓰고 gB뒤에 counting() 같은 메서드 사용 가능
+- **표로 정리된 스트림 변환 618p**
+
+
+### 예제
+- 14-3 다시 풀기 - 함수형 인터페이스 종류
