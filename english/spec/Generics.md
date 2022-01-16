@@ -56,3 +56,15 @@ public class Box<T> {
 ***
 
 ## Invoking and Instantiating a Generic Type
+- 지네릭 `Box`클래스를 참조하기 위해, T를 Integer와 같은 concrete 값으로 대체한 지네릭 타입을 사용해야한다.
+```
+Box<Integer> integerBox;
+```
+당신은 지네릭 타입의 동작을 일반적인 메서드의 동작으로 생각할 수 있다. 그러나 당신은 메서드에 값을 전달하는 대신, `Box`클래스 자신에게 타입 전달값을 전달한다.
+
+>Type Parameter와 Type Argument 용어 : 많은 개발자들이 "type parameter"와 "type argument"라는 용어들을 혼재해서 사용한다. 그러나 이 용어들은 같지 않다. 코딩에서 매개변수화된 타입을 생성하기 위해 type argument를 사용한다.  
+그러므로 `Foo<T>`에 있는 `T`는 type parameter이고 `Foo<String> f`에 있는 `String`은 type argument이다.
+
+- 다른 어떤 정의들과 같이, 이 코드는 새 `Box`객체를 만들지 않는다. 심플하게 `integerBox`가 "Integer의 Box"에 대한 참조를 가졌음을 선언한다.
+
+
