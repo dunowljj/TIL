@@ -217,19 +217,127 @@ public final class System{
 
 # 3. File
 ## 3.1. 생성자, 메서드
-|생성자/메서드|설명 |
-|-|--|
-|File(String fileName) | 주어진 문자열을 이름으로 갖는 파일을 위한 File 인스턴스를 생성한다. 파일 뿐만 아니라 **디렉토리도** 같은 방법으로 다룬다. 여기서 fileName은 주로 경로(path)를 포함해서 지정해주지만, 파일 이름만 사용해도 되는 데 이 경우 **프로그램이 실행되는 위치**가 경로로 간주된다.|
+- File(String fileName) :주어진 문자열을 이름으로 갖는 파일을 위한 File 인스턴스를 생성한다. 파일 뿐만 아니라 **디렉토리도** 같은 방법으로 다룬다. 여기서 fileName은 주로 경로(path)를 포함해서 지정해주지만, 파일 이름만 사용해도 되는 데 이 경우 **프로그램이 실행되는 위치**가 경로로 간주된다.
 - File(String pathName, String fileName)/(File pathName, String fileName)
 - File(URI uri) : 지정된 uri로 파일 생성
 - String getName()/getPath()
 - String getAbsolutePath()/getParent()/getCanonicalPath() : 파일의 절대경로/조상 디렉토리/정규경로를 String으로 반환
 - File getAbsoluteFile()/getParentFile()/getCanonicalFile() : 파일의 절대경로/조상 디렉토리/정규경로를 File로 반환
+>파일경로 메서드들 정리
+[codechacha]https://codechacha.com/ko/java-getpath-getabsolutepath-getcanonicalpath/
+
+- getPath는 입력한대로, getAbsolutePath는 절대, getCanonicalPath는 다듬은 경로
 ## 3.2. 멤버변수
 |멤버변수|설명|
 |--|--|
 |static String pathSeparator|OS에서 사용하는 경로 구분자. 윈도우";", 유닉스":"|
 |static char pathSeparatorChar|OS에서 사용하는 경로 구분자. 윈도우";", 유닉스":"|
 |static String separator|OS에서 사용하는 이름 구분자. 윈도우"₩", 유닉스"/"|
-|static char pathSeparatorChar|OS에서 사용하는 이름 구분자. 윈도우"₩", 유닉스"/"|
+|static char separatorChar|OS에서 사용하는 이름 구분자. 윈도우"₩", 유닉스"/"|
 |||
+## 3.3.1. 예제 1
+- 정규경로 : 기호나 링크 등을 포함하지 않는 유일한 경로, 단 하나뿐
+- 시스템 속성 (System.getProperty("");)
+    - user.dir : 실행중인 디렉토리
+    - sun.boot.class.path : 기본적인 classpath
+- File 인스턴스를 생성했다고 해서 파일이나 디렉토리가 생성되는 것은 아니다.
+    - 지정된 문자열이 유효하지 않더라도 컴파일이나 에러를 발생시키지 않음
+- 새로운 파일 생성 : File인스턴스 생성 후 출력스트림 생성하거나 createNewFile()사용
+## 3.3.2. 예제 2
+- isDirectory, exists
+## 3.3.3. 예제 3
+- 재귀 호출로 하위 파일만 다 지우기
+- File 객체로 디렉토리 다루기  
+```
+String currDir = System.getProperty("user.dir");
+File dir = new File(currDir);
+File[] files = dir.listFiles();
+```
+- 해당 디렉토리에 listFiles() 사용해서 파일 및 경로 목록 뽑아내기
+## 3.3.4. 예제4
+- renameTo(File f)를 이용해서 파일의 이름을 바꾸는 내용
+- 파일 순서 바로잡기
+- 왜 length-7인데 001이 아닌 00001일까
+
+## 3.4. 직렬화(serialization)
+### 3.4.1. 설명
+- 객체를 데이터 스트림으로 만드는 것
+- 저장된 데이터를 스트림에 쓰기(write)위해 연속적인 데이터로 변환하는 것
+- 데이터를 읽어서 객체를 만드는 것을 역직렬화(deserialization)라고 함
+### 3.4.2. ObjectInputStream, ObjectOutputStream
+- 보조스트림
+- InputStream, OutputStream 직접 상속받음
+- 직렬화에는 ObjectOutputStream
+- 역직렬화에는 ObjectInputStream
+```
+ObjectInputStream(InputStream in)
+ObjectOutputStream(OutputStream out)
+```
+- 파일에 객체를 저장(직렬화)하는 경우
+```
+FileOutputStream fos = new FileOutputStream("objectfile.ser");
+ObjectOutputStream out = new ObjectOutputStream(fos);
+
+out.writeObject(new UserInfo());
+```
+-> objectfile.ser이라는 파일에 UserInfo객체를 직렬화하여 저장한다.  
+
+- 역직렬화
+```
+FileInputStream fis = new FileInputStream("objectfile.ser");
+ObjectInputStream in = new ObjectInputStream(fis);
+
+UserInfo info = (UserInfo)in.readObject();
+```
+### ObjectInputStream, ObjectOutputStream 메서드
+- 664p 메서드
+- 직렬화와 역직렬화를 직접 구현할 때 주로 사용
+- defaultReadObject(), defaultWriteObject()는 자동 직렬화를 수행
+- readObject()와 writeObject()를 사용한 자동 직렬화가 편리하기는 하지만 직렬화 작업시간을 단축시키려면 직렬화하고자 하는 클래스에 추가적으로 다음과 같은 2개의 메서드를 직접 구현
+```
+private void writeObject(ObjectOutputStream out)
+    throws IOException{
+        //write메서드를 사용해서 직렬화를 수행한다.
+    }
+private void readObject(ObjectInputStream in)
+    throws IOException, ClassNotFoundException{
+        //read메서드를 사용해서 직렬화를 수행한다.
+    }
+```
+### 3.4.3. 직렬화 가능한 클래스 만들기
+- Serializable인터페이스를 구현하도록 하면 됨
+- Serializable은 아무 내용도 없는 빈 인터페이스, **직렬화를 고려하여 작성한 클래스인지 판단**하는 기준이 됨  
+
+`public inferface Serializable{}`  
+
+- Serializable을 구현하지 않았어도, 조상 클래스가 Sereializable을 구현했다면 직렬화 가능
+- 조상클래스만 Serializable을 구현하지 않은 경우, 자손클래스를 직렬화할때 조상클래스에 정의된 인스턴스 변수는 직렬화 대상에서 제외
+- 머리부터 적용되는 이미지로 외움 headset()?
+### 3.4.4. 직렬화 대상에서 제외시키기 - transient
+```
+public class ...{
+    ...
+    //직렬화 할 수 없는놈 참조
+    Object obj = new Object();      //Object는 직렬화할 수 없다.
+    //실제 저장 객체가 직렬화 가능
+    Object obj = new String("abc"); //String은 직렬화 가능
+}
+```
+- Serializable이 구현되어 있어도, **직렬화 할 수 없는 클래스의 객체**를 인스턴스변수가 **참조**하고 있다면 직렬화에 실패
+    - java.io.NotSerializableException 발생
+- 인스턴스변수가 직렬화가 안돼도, **실제 저장 객체**가 직렬화가 가능하다면 직렬화 가능
+- **transient** 붙이면 직렬화 대상에서 제외
+    - 위처럼 직렬화 안되는 객체를 참조 시 제외
+    - 보안상 직렬화되면 안되는 값에 붙임
+    - transient가 붙은 인스턴스변수의 값은 그 타입의 기본값으로 직렬화 됨 -> 역직렬화 하면 Object형, String형 값이 null로 반환
+### 직렬화와 역직렬화 예제 1
+- 예제에 앞서 클래스 컴파일
+### 직렬화와 역직렬화 예제 2
+- writeObject()사용
+- 객체를 직렬화하는 코드는 간단하지만, 객체에 정의된 모든 인스턴스변수에 대한 참조를 찾아들어아기 때문에 상당히 복잡하고 시간이 걸리는 작업이 될 수 있다.
+    - ArrayList같은 객체 직렬화 시 저장된 모든 객체들과 각 객체의 인스턴스 변수가 참조하고 있는 객체들까지 모두 직렬화
+### 직렬화와 역직렬화 예제 3
+- readObject()로 읽어옴
+    - 읽어올 때(역직렬화) 형변환 `UserInfo u1 = (UserInfo)in.readObject();` 
+    - 역직렬화 시 직렬화할 때의 순서와 일치해야 함 -> 개별적 직렬화보다 ArrayList와 같은 컬렉션에 저장해서 직렬화하는게 좋다.(순서 고려 안해도 됨)
+    

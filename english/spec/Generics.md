@@ -62,9 +62,21 @@ Box<Integer> integerBox;
 ```
 당신은 지네릭 타입의 동작을 일반적인 메서드의 동작으로 생각할 수 있다. 그러나 당신은 메서드에 값을 전달하는 대신, `Box`클래스 자신에게 타입 전달값을 전달한다.
 
->Type Parameter와 Type Argument 용어 : 많은 개발자들이 "type parameter"와 "type argument"라는 용어들을 혼재해서 사용한다. 그러나 이 용어들은 같지 않다. 코딩에서 매개변수화된 타입을 생성하기 위해 type argument를 사용한다.  
-그러므로 `Foo<T>`에 있는 `T`는 type parameter이고 `Foo<String> f`에 있는 `String`은 type argument이다.
+>Type Parameter와 Type Argument 용어 : 많은 개발자들이 **"type parameter"**와 **"type argument"**라는 용어들을 혼재해서 사용한다. 그러나 이 용어들은 같지 않다. 코딩에서 매개변수화된 타입을 생성하기 위해 **type argument**를 사용한다.  
+그러므로 `Foo<T>`에 있는 `T`는 **type parameter(매개변수)**이고 `Foo<String> f`에 있는 `String`은 **type argument(인수)**이다.
 
-- 다른 어떤 정의들과 같이, 이 코드는 새 `Box`객체를 만들지 않는다. 심플하게 `integerBox`가 "Integer의 Box"에 대한 참조를 가졌음을 선언한다.
+- 다른 어떤 정의들과 같이, 이 코드는 확실히 새 `Box`객체를 만들지 않는다. 심플하게 `integerBox`가 "Box of Integer"에 대한 참조를 가졌음을 뜻한다. "Box of Integer"는 `Box<Integer>`을 읽는 방법이다.
+- 일반적으로 지네릭 타입의 사용은 매개변수화된 타입으로 여겨진다.
+- 보통은 이 클래스의 인스턴스를 만들기 위해 `new`키워드를 사용한다 `<Integer>`을 클래스 이름과 괄호 사이에 위치시켜라.
+```
+Box<Integer> integerBox = new Box<Integer>();
+```
+***
 
+## The Diamond
+- java SE 7부터, 문맥으로부터 타입 인수를 컴파일러가 결정하고 추론할 수 있다면, 타입 인수를 비운(<>)채로 지네릭 클래스 생성자를 불러오는 방식으로 대체할 수 있다. 꺽쇠 괄호 한쌍(<>)은 다이아몬드로 불린다. 다음과 같이 `Box<Integer>`의 인스턴스를 생성 가능하다.
+```
+Box<Integer> integerBox = Box<>();
+```
+- 다이아몬드 표기법과 타입 추론에 대한 추가 정보 [Type Inference](https://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html)
 
