@@ -1,6 +1,11 @@
 Generics
 ======
 # 1. Why Use Generics?
+- 간단히 말해서 지네릭스는 클래스, 인터페이스 그리고 인터페이스를 정의할때, (클래스나 인터페이스의) 타입이 파라미터가 될 수 있게 해준다.
+- 
+
+
+
 
 # 2. Generic Types
 - 지네릭 타입은 타입에 대해 매개변수화된 지네릭 클래스 또는 인터페이스이다.
@@ -79,4 +84,47 @@ Box<Integer> integerBox = new Box<Integer>();
 Box<Integer> integerBox = Box<>();
 ```
 - 다이아몬드 표기법과 타입 추론에 대한 추가 정보 [Type Inference](https://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html)
+***
 
+## Multiple Type Parameters
+- 이전에 언급했듯이, 지네릭 클래스는 복수의 파라미터를 가질 수 있다. 
+- 예시로 지네릭 `Pair` 인터페이스를 구현하는 지네릭`OrderedPair`클래스이다:
+```
+public interface Pair<K, V> {
+    public K getKey();
+    public V getValue();
+}
+
+public class OrderedPair<K, V> implements Pair<K, V> {
+
+    private K key;
+    private V value;
+
+    public OrderedPair(K key, V value) {
+	this.key = key;
+	this.value = value;
+    }
+
+    public K getKey()	{ return key; }
+    public V getValue() { return value; }
+}
+```
+- `OrderedPair`클래스의 두 가지 인스턴스 생성 방법:
+```
+OrderedPair<String, Integer> p1 = new OrderedPair<>("Even", 8);
+OrderedPair<String, String>  p2 = new OrderedPair<>("hello", "world");
+```
+- `new OrderedPair<String, Integer>`라는 코드는 `K`를 `String`으로, `v`를 `Integer`로 인스턴트화한다. 그러므로, `OrderedPair`의 생성자의 매개변수 타입은 각각 `String`과 `Integer`이다. 오토박싱 덕분에 `String`과 `int`도 제한을 통과할 수 있다.
+- 다이아몬드에서 언급했듯이, 자바 컴파일러가 타입을 추론할 수 있기 때문에, 아래 문장처럼 코드를 줄일 수 있다.
+```
+OrderedPair<String, Integer> p1 = new OrderedPair<>("Even", 8);
+OrderedPair<String, String>  p2 = new OrderedPair<>("hello", "world");
+```
+- 지네릭 인터페이스를 생성할 때 지네릭 클래스 생성의 관례를 따른다.
+***
+
+## Parameterized Types
+- 타입 파라미터(`K` or `V`)를 매개변수화된 타입(`List<String>`)으로 대체할 수 있다. `OrderedPair<K,V>`를 사용해 예시를 들자면:
+```
+OrderedPair<String, Box<Integer>> p = new OrderedPair<>("primes", new Box<Integer>(...));
+```

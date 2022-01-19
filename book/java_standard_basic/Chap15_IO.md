@@ -340,4 +340,6 @@ public class ...{
 - readObject()로 읽어옴
     - 읽어올 때(역직렬화) 형변환 `UserInfo u1 = (UserInfo)in.readObject();` 
     - 역직렬화 시 직렬화할 때의 순서와 일치해야 함 -> 개별적 직렬화보다 ArrayList와 같은 컬렉션에 저장해서 직렬화하는게 좋다.(순서 고려 안해도 됨)
-    
+
+### 연습문제
+- split(String regex)
