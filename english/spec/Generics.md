@@ -146,3 +146,27 @@ OrderedPair<String, String>  p2 = new OrderedPair<>("hello", "world");
 ```
 OrderedPair<String, Box<Integer>> p = new OrderedPair<>("primes", new Box<Integer>(...));
 ```
+***
+
+## Raw Types
+- raw type은 타입 인수가 없는 지네릭 클래스나 인터페이스를 지칭하는 말이다. 예시로 주어진 `Box` 클래스:
+```
+public class Box<T> {
+    public void set(T t) { /* ... */ }
+    // ...
+}
+```
+- `Box<T>`의 매개변수화된 타입을 생성하기 위해, 형식 타입 매개변수에 실제 타입 인수(actual type argument, 실제라고 적는게 맞는지 모르겠다.)를 적어야 한다.
+```
+Box<Integer> intBox = new Box<>();
+```
+- 만약 실제 타입 인수가 생략되었다면, `Box<T>`의 raw type이 생성된다.
+```
+Box rawBox = new Box();
+```
+- 그러므로, `Box`는 지네릭 타입인 `Box<T>`의 raw type이다. 그러나 지네릭 타입이 아닌 클래스나 인터페이스는 raw type이 아니다.
+- 많은 API클래스들(`Collections`같은 클래스들)에서 지네릭은 JDK5.0 이전에는 존재하지 않았기 때문에, raw type들은 많은 레거시 코드에서 나타난다. raw type을 사용할 때, 필수적으로 pre-generics 행동을 해야한다. - `Box`가 `Object`를 제공. 이전 버전과의 하위호환성을 위해 매개변수화된 타입을 그것의 raw type에 할당하는 것은 허용된다.
+```
+Box<String> stringBox = new Box<>();
+Box rawBox = stringBox;               // OK
+``` 
