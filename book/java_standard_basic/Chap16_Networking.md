@@ -108,6 +108,23 @@ InputStream in = conn.getInputStream();
     - InputStream, OutputStream 가짐 -> 프로레스간의 통신
 - ServerSocket클래스
     - 포트와 연결되어 외부의 연결요청을 기다리다 연결요청이 들어오면, Socket을 생성해서 소켓과 소켓간의 통신이 이루어지도록 한다. 한 포트에 하나의 ServerSocket만 연결할 수 있다.(프로토콜 다르면 같은 포트 공유 가능)
+### 예제
+- 클라이언트 프로그램의 요청을 지속적으로 처리하기 위해 무한 반복문 사용
+```
+    while(true){
+        try{
+            ...
+            Socket socket = serverSocket.accept();
+            ...
+        }
+    }
+```
+    예제1 - 서버 소켓을 만들어 포트에 바인드 시켜놓고, accept()로 요청을 받아들여 getOutputStream, DataOutputStream 이용하여 데이터 전송  
 
+    예제2 - 소켓을 생성하고(ip,포트) 해당 포트에 요청을 보내고 getInputStream, DataInputStream활용하여 데이터 출력
 ## 4.4. UDP소켓 프로그래밍
-
+- DatagramSocket과 DatagramPacket사용
+- DatagramPacket : 헤더와 데이터로 구성
+    - 헤더 : DatagramPacket을 수신할 호스트의 정보(호스트의 주소와 포트) 저장
+### 예제
+- 클라이언트에서 DatagramPacket 생성해서 DatagramSocket으로 서버에 전송, DatagramPacket을 받아(receive) 정보 얻어서 서버시간을 DatagramPacket에 담아서 전송(send)

@@ -169,4 +169,12 @@ Box rawBox = new Box();
 ```
 Box<String> stringBox = new Box<>();
 Box rawBox = stringBox;               // OK
-``` 
+```
+- 그러나 raw type을 매개변수화된 타입에 할당하면 경고를 받는다.
+```
+Box<String> stringBox = new Box<>();
+Box rawBox = stringBox;
+rawBox.set(8);  // warning: unchecked invocation to set(T)
+```
+- 해당 경고는 raw type 이 안전하지 않은 코드를 런타임에 잡아내는 것을 지연하면서, 일반적인 타입 검사를 우회한다는 것을 보여준다. 그러므로 raw type들을 사용하는 것을 피해야 한다.
+- [Type Erasure](https://docs.oracle.com/javase/tutorial/java/generics/erasure.html) 섹션에 자바컴파일러가 어떻게 raw type을 사용하는지에 대한 정보가 더 있다.
