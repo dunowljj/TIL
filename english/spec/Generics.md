@@ -178,3 +178,37 @@ rawBox.set(8);  // warning: unchecked invocation to set(T)
 ```
 - 해당 경고는 raw type 이 안전하지 않은 코드를 런타임에 잡아내는 것을 지연하면서, 일반적인 타입 검사를 우회한다는 것을 보여준다. 그러므로 raw type들을 사용하는 것을 피해야 한다.
 - [Type Erasure](https://docs.oracle.com/javase/tutorial/java/generics/erasure.html) 섹션에 자바컴파일러가 어떻게 raw type을 사용하는지에 대한 정보가 더 있다.
+
+## Unchecked Error Message
+- 이전에 언급했듯이,지네릭 코드와 레거시 코드를 섞을 경우, 아래와 같은 경고 메세지를 마주할 것이다:
+```
+Note: Example.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+```
+- raw type을 사용하는 오래된 API를 사용할 때 이런 오류가 발생할 수 있다. 아래의 예시에 보이듯이:
+```
+public class WarningDemo {
+    public static void main(String[] args){
+        Box<Integer> bi;
+        bi = createBox();
+    }
+
+    static Box createBox(){
+        return new Box();
+    }
+}
+```
+  
+- "unchecked"라는 용어는 컴파일러가 타입 안전성을 보장하기 위해서 하는 모든 타입 검증을 위한 타입 정보가 불충분함을 의미한다. "unchecked" 경고는 컴파일러가 힌트를 주더라도 기본적으로 보이지 않는다. 모든 "unchecked" 경고를 보이 위해서는 `Xlint:unchecked.`와 함께 다시 컴파일해야한다.
+  
+- `Xlint:unchecked`와 함께 이전 예제를 다시 컴파일하는 것은 아래와 같은 추가적인 정보를 제공한다.:
+```
+WarningDemo.java:4: warning: [unchecked] unchecked conversion
+found   : Box
+required: Box<java.lang.Integer>
+        bi = createBox();
+                      ^
+1 warning
+```
+- 완벽하게 unchecked 경고를 비활성하기 위해서는 `Xlint:unchecked` flag를 사용하면 된다. `SuppressWarning("unchecked")` 어노테이션은 unchecked 경고를 막아준다.
+만약 **@SuppressionWarning** 구문에 익숙하지 않다면, [Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)를 봐라.

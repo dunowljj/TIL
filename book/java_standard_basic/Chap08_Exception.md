@@ -19,8 +19,8 @@
 ## 2.2. 흐름
     1. 예외 발생
     2. 해당하는 예외 클래스의 인스턴스 생성
-    3. 처리할 수 있는 catch블럭 탐색
-    -> **instanceof 연산자**를 통해 검사해서 true 만날때까지 검사(Exception 에는 다 걸림)
+    3. 처리할 수 있는 catch블럭 탐색  
+    -> instanceof 연산자를 통해 검사해서 true 만날때까지 검사(Exception 에는 다 걸림)
     4. 찾으면 catch문 못찾으면 예외처리x
 ## 2.3. 정보 얻기
 - printStackTrace(): 예외발생 당시에 호출스택에 있었던 메서드의 정보와 예외 메세지 화면에 출력
@@ -28,12 +28,11 @@
 ## 2.4. 멀티 catch 블럭
 - 하나의 catch 안에 | 사용해서 연결
 - 중복 코드 줄일 수 있음
-## 2.5. try-catch 리턴처리
-- try -> retrun 값, 객체, String ; 값 복사
->코데방님 try-catch문에서 리턴처리  
-https://codevang.tistory.com/211
 - **상속관계에 있는 예외클래스를 같이 쓰면 컴파일 에러** -> 조상하나 쓰는거랑 같음; 이미 대안적인 예외에 잡혔다고 나온다.
 - 연결 개수 제한 없음
+## 2.5. try-catch 리턴처리
+- try -> return 값, 객체, String ; 값 복사
+>[코데방님 try-catch문에서 리턴처리](https://codevang.tistory.com/211)
 ***
 ## 2.6. finally
 - 발생여부 무관 실행
