@@ -85,8 +85,8 @@ Box<Integer> integerBox;
 ```
 당신은 지네릭 타입의 동작을 일반적인 메서드의 동작으로 생각할 수 있다. 그러나 당신은 메서드에 값을 전달하는 대신, `Box`클래스 자신에게 타입 전달값을 전달한다.
 
->Type Parameter와 Type Argument 용어 : 많은 개발자들이 **"type parameter"**와 **"type argument"**라는 용어들을 혼재해서 사용한다. 그러나 이 용어들은 같지 않다. 코딩에서 매개변수화된 타입을 생성하기 위해 **type argument**를 사용한다.  
-그러므로 `Foo<T>`에 있는 `T`는 **type parameter(매개변수)**이고 `Foo<String> f`에 있는 `String`은 **type argument(인수)**이다.
+>Type Parameter와 Type Argument 용어 : 많은 개발자들이  **"type parameter"** 와 **"type argument"** 라는 용어들을 혼재해서 사용한다. 그러나 이 용어들은 같지 않다. 코딩에서 매개변수화된 타입을 생성하기 위해 **type argument** 를 사용한다.  
+그러므로 `Foo<T>`에 있는 `T`는 **type parameter(매개변수)** 이고 `Foo<String> f`에 있는 `String`은 **type argument(인수)** 이다.
 
 - 다른 어떤 정의들과 같이, 이 코드는 확실히 새 `Box`객체를 만들지 않는다. 심플하게 `integerBox`가 "Box of Integer"에 대한 참조를 가졌음을 뜻한다. "Box of Integer"는 `Box<Integer>`을 읽는 방법이다.
 - 일반적으로 지네릭 타입의 사용은 매개변수화된 타입으로 여겨진다.
@@ -156,21 +156,26 @@ public class Box<T> {
     // ...
 }
 ```
-- `Box<T>`의 매개변수화된 타입을 생성하기 위해, 형식 타입 매개변수에 실제 타입 인수(actual type argument, 실제라고 적는게 맞는지 모르겠다.)를 적어야 한다.
+- `Box<T>`의 매개변수화된 타입을 생성하기 위해, 형식 타입 매개변수 `T`에 실제 타입 인수(actual type argument, 실제라고 적는게 맞는지 모르겠다.)를 제공해야 한다:
 ```
 Box<Integer> intBox = new Box<>();
 ```
-- 만약 실제 타입 인수가 생략되었다면, `Box<T>`의 raw type이 생성된다.
+- 만약 실제 타입 인수가 생략되었다면, `Box<T>`의 raw type이 생성된다:
 ```
 Box rawBox = new Box();
 ```
 - 그러므로, `Box`는 지네릭 타입인 `Box<T>`의 raw type이다. 그러나 지네릭 타입이 아닌 클래스나 인터페이스는 raw type이 아니다.
-- 많은 API클래스들(`Collections`같은 클래스들)에서 지네릭은 JDK5.0 이전에는 존재하지 않았기 때문에, raw type들은 많은 레거시 코드에서 나타난다. raw type을 사용할 때, 필수적으로 pre-generics 행동을 해야한다. - `Box`가 `Object`를 제공. 이전 버전과의 하위호환성을 위해 매개변수화된 타입을 그것의 raw type에 할당하는 것은 허용된다.
+- 많은 API클래스들(`Collections`같은 클래스들)에서 지네릭은 JDK5.0 이전에는 존재하지 않았기 때문에, raw type들은 많은 레거시 코드에서 나타난다. raw type을 사용할 때, 필수적으로 pre-generics 행동( `Box`가 `Object`들을 제공)을 해야한다. . 이전 버전과의 하위호환성을 위해 매개변수화된 타입을 그것의 raw type에 할당하는 것은 허용된다.
 ```
 Box<String> stringBox = new Box<>();
 Box rawBox = stringBox;               // OK
 ```
-- 그러나 raw type을 매개변수화된 타입에 할당하면 경고를 받는다.
+- 그러나 raw type을 매개변수화된 타입에 할당하면 경고를 받는다:
+```
+Box rawBox = new Box();           // rawBox is a raw type of Box<T>
+Box<Integer> intBox = rawBox;     // warning: unchecked conversion
+```
+- 만약 지네릭 대응하는 타입에 정의된 메서드를 호출하기 위해 raw type을 사용한다면 그 또한 경고를 받는다:
 ```
 Box<String> stringBox = new Box<>();
 Box rawBox = stringBox;
@@ -212,3 +217,6 @@ required: Box<java.lang.Integer>
 ```
 - 완벽하게 unchecked 경고를 비활성하기 위해서는 `Xlint:unchecked` flag를 사용하면 된다. `SuppressWarning("unchecked")` 어노테이션은 unchecked 경고를 막아준다.
 만약 **@SuppressionWarning** 구문에 익숙하지 않다면, [Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)를 봐라.
+***
+# 3. Generic Methods
+- 지네릭 메서드는 고유의 타입 매개변수를 가진 메서드이다. 이것은 지네릭 타입을 선언하는 것과 유사하지만, 타입 매개변수의 범위는 
