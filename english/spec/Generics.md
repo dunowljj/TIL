@@ -218,5 +218,48 @@ required: Box<java.lang.Integer>
 - 완벽하게 unchecked 경고를 비활성하기 위해서는 `Xlint:unchecked` flag를 사용하면 된다. `SuppressWarning("unchecked")` 어노테이션은 unchecked 경고를 막아준다.
 만약 **@SuppressionWarning** 구문에 익숙하지 않다면, [Annotations](https://docs.oracle.com/javase/tutorial/java/annotations/index.html)를 봐라.
 ***
+
 # 3. Generic Methods
-- 지네릭 메서드는 고유의 타입 매개변수를 가진 메서드이다. 이것은 지네릭 타입을 선언하는 것과 유사하지만, 타입 매개변수의 범위는 
+- 지네릭 메서드는 고유의 타입 매개변수를 가진 메서드이다. 이것은 지네릭 타입을 선언하는 것과 유사하지만, 타입 매개변수의 범위가 그것이 선언된 메서드로 제한되어 있다. 지네릭 클래스 생성자 뿐만 아니라 정적 그리고 정적이 아닌 지네릭 메서드들이 허용된다.
+- `Util`클래스는 두 쌍의 객체를 비교하는 지네릭 메서드인 `compare`을 포함한다:
+```
+public class Util {
+    public static <K, V> boolean compare(Pair<K, V> p1, Pair<K, V> p2) {
+        return p1.getKey().equals(p2.getKey()) &&
+               p1.getValue().equals(p2.getValue());
+    }
+}
+
+public class Pair<K, V> {
+
+    private K key;
+    private V value;
+
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public void setKey(K key) { this.key = key; }
+    public void setValue(V value) { this.value = value; }
+    public K getKey()   { return key; }
+    public V getValue() { return value; }
+}
+```
+- 이 메서드를 호출하기 위한 완전한 문장은 이러하다:
+```
+Pair<Integer, String> p1 = new Pair<>(1, "apple");
+Pair<Integer, String> p2 = new Pair<>(2, "pear");
+boolean same = Util.<Integer, String>compare(p1, p2); //여기 3줄 타입 부분
+```
+- 3줄 타입 부분과 같이 타입이 명시적으로 제공된다. 일반적으로 이런 타입은 생략될 수 있으며, 컴파일러가 필요한 타입을 추론할 것이다:
+```
+Pair<Integer, String> p1 = new Pair<>(1, "apple");
+Pair<Integer, String> p2 = new Pair<>(2, "pear");
+boolean same = Util.compare(p1, p2);
+``` 
+- 타입 추론으로 알려진 이 특성은 꺽쇠 괄호에 타입을 지정하지 않고도 지네릭 메서드를 일반 메서드처럼 호출하는 것을 허용한다. 이 주제는 [Type Inference](https://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html)에서 깊게 다뤄진다.
+***
+
+# 4. Bounded Type Parameters
+- 아마 매개변수화된 타입에 들어갈 타입 인수를 제한하고 싶었던 순간들이 있었을 것이다.
