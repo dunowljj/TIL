@@ -1,4 +1,4 @@
-# Clean Code
+# CleanCode
 
 # 6장 객체와 자료 구조
 
