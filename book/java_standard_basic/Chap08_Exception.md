@@ -4,11 +4,14 @@
 - 에러와 예외 차이
 - 모든 예외 클래스는 Exception 클래스 자손
 - RuntimeException 클래스들: RuntimeExcpetion 클래스와 그 자손 클래스들
-    - 사용자 실수 등 외적인 요인에 의한 예외(외부의 영향)
-    - checked 예외 : 해당 클래스와 자손들이 발생할 가능성 있음
-- Exception 클래스들: RuntimeExcpetion클래스들을 제외한 나머지
-    - 프로그래머의 실수로 발생하는 예외 -> 걸리면 컴파일도 안됨
     - unchecked예외
+    - 프로그래머의 실수로 발생하는 예외
+    - 배열 범위 -> ArrayIndxOutOfBoundsException, null값인 참조변수 호출 -> NullPointerException, 정수를 0으로 나누려 할때 -> ArithmeticException
+- Exception 클래스들: RuntimeExcpetion클래스들을 제외한 나머지
+    - 프로그램 사용자 동작 등 외적인 요인에 의한 예외 -> 걸리면 컴파일도 안됨
+    - 주로 외부의 영향
+    - checked 예외 : 해당 클래스와 자손들이 발생할 가능성 있음 -> 컴파일러 통과도 못함
+    - 없는 파일 입력 -> FileNotFountException, ClassNotFoundExcpetion, DataFormatException 등
 ***
 
 # 2. try-catch문
@@ -53,7 +56,7 @@ throw e;
 - 여러개 일때 쉼표
 - 선언부에 예외를 선언함으로써 사용하려는 사람들이 무슨 예외를 처리해야하는지 쉽게 알 수 있음
 - 상속 관계까지 고려해야 한다.
-- checked 예외는 try-catch 안해도 컴파일 오류 안남
+- unchecked 예외는 try-catch 안해도 컴파일 오류 안남
 ***
 # 5. 사용자 정의 예외(307p)
 - Exception 또는 RuntimeException 클래스 상속
