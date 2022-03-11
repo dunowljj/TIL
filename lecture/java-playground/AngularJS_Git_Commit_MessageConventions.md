@@ -63,4 +63,12 @@ The removed `inject` wasn't generaly useful for directives so there should be no
 ```
 
 ### Referencing issues
-
+닫힌(해결된?) 버그들은 앞에 "Closes"를 붙여 footer에 나열되어야 한다:
+```
+Closes #234
+```
+또는 여러 이슈가 있는 경우:
+```
+Closes #123, #245, #992
+```
+[예시들](https://gist.github.com/stephenparish/9941e89d80e2bc58a153#examples)
