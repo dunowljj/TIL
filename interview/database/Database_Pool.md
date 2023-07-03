@@ -12,12 +12,11 @@ Connection pool은 외부 연결이 필요하며 생성비용이 비싸다.
 ### 비싼 생성 및 종료 비용
 - 네트워크 오버헤드
 - 인증과 권한 검사가 필요
-- 메모리, CPU 시간  리소스를 포함
+- 메모리, CPU 시간 리소스를 할당
 ### DB 접근 시간 단축
 - 미리 만들어 놓았기때문에 접근 시간이 단축된다.
 ### 메모리와 DB에 걸리는 부하 조정
 - DB에 접근하는 Connection 수를 제한해서 걸리는 부하를 조정 할 수 있다.
-
 
 ## DB에 접근하는 단계
 1. 웹 컨테이너가 실행되면서 DB와 연결된 Connection 객체들을 미리 생성하여 pool에 저장
@@ -28,7 +27,6 @@ Connection pool은 외부 연결이 필요하며 생성비용이 비싸다.
 - 모든 요청이 DB에 접근하고 있는데 남은 Connection이 없다면,
   해당 클라이언트는 대기 상태로 전환
 - Pool에 Connection이 반환되면 대기 상태의 클라이언트에게 순차적으로 제공
-
 
 ## Thread Pool
 비슷한 맥락으로 Thread Pool이라는 개념도 있다.
@@ -49,4 +47,4 @@ WAS에서 Thread와 Connection의 수는 직접적으로 메모리와 관련있�
 ### 참고 및 사진 출처
 - [WeareSoft 데이터베이스 풀](https://github.com/WeareSoft/tech-interview/blob/master/contents/db.md#%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%ED%92%80)
 - 영한님 MVC 1 강의
-    - 읽어보면 좋을 글 [우형 블로그](https://techblog.woowahan.com/2663/) - HikariCP 데드락을 피하는 풀 사이즈
+- 나중에 쓰레드풀 설정 시 읽어보면 좋을 글 [우형 블로그](https://techblog.woowahan.com/2663/) - HikariCP 데드락을 피하는 풀 사이즈
