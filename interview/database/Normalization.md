@@ -45,7 +45,7 @@
 - 기본 속성을 제외한 속성들
 
 # 정규화 및 정규화 예시
-> 예시는 모두 [쉬운코딩님의 강의](https://www.youtube.com/watch?v=EdkjkifH-m8&list=PLcXyemr8ZeoREWGhhZi5FZs6cvymjIBVe&index=23) 내용입니다.
+> 예시는 모두 [쉬운코드님의 강의](https://www.youtube.com/watch?v=EdkjkifH-m8&list=PLcXyemr8ZeoREWGhhZi5FZs6cvymjIBVe&index=23) 내용입니다.
 ![](images/easy_exam.png)
 ## 1NF
 ![](images/easy_1nf.png)
@@ -87,5 +87,5 @@
 ## 참고 및 출처
 compsite의 사진자료는 코딩애플 강의에서, 나머지는 쉬운코딩 강의에서 캡쳐했습니다. 코딩 애플님 강의는 간략한 설명이 있고, 쉬운코딩님 강의에는 좀 더 자세한 내용이 쉽게 설명되어 있습니다.
 - [코딩 애플 정규화 요약](https://www.youtube.com/watch?v=Y1FbowQRcmI&t=3s)
-- [쉬운 코딩 정규화 강의](https://www.youtube.com/watch?v=EdkjkifH-m8&list=PLcXyemr8ZeoREWGhhZi5FZs6cvymjIBVe&index=23)
+- [쉬운 코드 정규화 강의](https://www.youtube.com/watch?v=EdkjkifH-m8&list=PLcXyemr8ZeoREWGhhZi5FZs6cvymjIBVe&index=23)
 - [gyoogle 정규화](https://gyoogle.dev/blog/computer-science/data-base/Normalization.html) 1,2,3 예시 및 간략한 설명 있다.
