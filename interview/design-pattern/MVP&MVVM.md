@@ -108,7 +108,7 @@ MVVM (Model-View-ViewModel)
 - 데이터 바인딩을 이용해 View와 ViewModel 사이의 상호작용을 자동화했기 떄문이다.
 - ViewModel은 Model과 View 사이의 연결고리 역할을 하며, 
 이를 통해 View의 코드를 간결하게 유지하고, 테스트와 유지보수를 더 쉽게 할 수 있다.
-
+- ViewModel과 View가 1대 N관계가 된다.
 ## 동작
 1. 사용자의 Action들은 View를 통해 들어온다.
 2. View에 Action이 들어오면, Command 패턴으로 View Model에 Action을 전달한다.
@@ -124,8 +124,9 @@ MVVM (Model-View-ViewModel)
 
 ### 단점
 - 복잡한 데이터 바인딩은 디버깅을 어렵게 만들 수 있습니다.
-- ViewModel이 과도하게 복잡해질 수 있습니다. 이는 ViewModel이 View를 처리하는 로직을 다루기 때문에 발생합니다.
+- ViewModel이 View를 처리하는 로직을 다루기 때문에 ViewModel이 과도하게 복잡해질 수 있다.
 - 대규모 프로젝트에서는 ViewModel이 너무 많은 책임을 지게 될 수 있습니다, 이는 'God object' 문제로 이어질 수 있습니다.
+- 설게가 쉽지 않다.
 
 ## 참고 및 출처
 - https://doqtqu.tistory.com/332
