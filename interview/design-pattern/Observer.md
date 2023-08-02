@@ -15,12 +15,16 @@ Observer Pattern
 - Subject와 Observer 사이의 느슨한 결합(Loose Coupling)
   - Subject는 Observer에 대한 구체적인 정보를 알지 못하며, Observer 인터페이스만 알면 된다.
   - 이로 인해 새로운 Observer를 쉽게 추가하거나 기존 Observer를 수정하거나 제거할 수 있다.
-- 브로드캐스트 통신: Subject는 자신의 상태 변화를 모든 Observer에게 알릴 수 있습니다.
-- 단일 책임 : 상태 변경에 대한 알림 로직과 실제 비즈니스 로직을 분리할 수 있다.
+- 브로드캐스트 통신
+  - Subject는 자신의 상태 변화를 모든 Observer에게 알릴 수 있습니다.
+- 단일 책임
+  - 상태 변경에 대한 알림 로직과 실제 비즈니스 로직을 분리할 수 있다.
 
 ### 단점
-- 메모리 누수: Observer가 Subject를 구독한 채로 해제되지 않으면 메모리 누수가 발생할 수 있다.
-- 순서 문제: Observer들이 불린 순서가 중요한 경우, Observer 패턴은 이를 보장하지 않는다. 추가적인 방법을 써야한다.
+- 메모리 누수
+  - Observer가 Subject를 구독한 채로 해제되지 않으면 메모리 누수가 발생할 수 있다.
+- 순서 문제
+  - Observer들이 불린 순서가 중요한 경우, Observer 패턴은 이를 보장하지 않는다. 추가적인 방법을 써야한다.
 
 ## gpt 예시 코드
 ### Observer 인터페이스와 Subject 인터페이스
