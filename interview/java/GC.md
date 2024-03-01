@@ -113,9 +113,14 @@ Mark and Compact
 
 #### Permanent 영역
 
-- Method Area의 구현체
+- Method Area의 부분 구현체
 - JVM이 클래스들과 메소드들을 설명하기 위해 필요한 메타데이터들을 포함하고 있습니다.
 - Java 8부터는 PermGen은 Metaspace로 교체된다.
+
+#### MetaSpace
+
+- 클래스 메타데이터, 메서드의 메타데이터, 필드 메타데이터, 상수 풀, 정적 변수 등 클래스와 관련된 구조적 정보를 저장한다.
+- PermGen은 JVM의 메모리에 포함되지만, 네이티브 메모리를 사용한다.
 
 ### 2.3.3. 동작 과정
 
