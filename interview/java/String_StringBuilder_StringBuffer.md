@@ -49,3 +49,8 @@
 - 구조가 매우 유사하나 스레드 안전성과 성능 사이의 트레이드오프를 기반으로 차이가 생긴다.
   - 성능 StringBuilder > StringBuffer
   - 스레드 안전성 StringBuilder < StringBuffer
+
+## 참고
+
+- https://github.com/WooVictory/Ready-For-Tech-Interview/blob/master/Java/%5BJava%5D%20String%2CStringBuilder%2CStringBuffer%20%EC%B0%A8%EC%9D%B4.md
+- https://gyoogle.dev/blog/computer-language/Java/String%20&%20StringBuilder%20&%20StringBuffer.html

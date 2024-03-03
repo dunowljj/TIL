@@ -52,3 +52,8 @@ String을 **리터럴로 선언**할 경우, 내부적으로 String의 `intern()
 
 - 자바 7이전에는 메소드 영역 내에 위치했다. OOM의 위험성이 있었다.
 - 자바 8부터는 힙 영역으로 옮겨졌고, GC가 가능해졌다.상수 풀의 크기를 조정하는 옵션도 지원한다.
+
+## 참고
+
+- https://gyoogle.dev/blog/computer-language/Java/Interend%20String%20in%20Java.html
+- https://github.com/WooVictory/Ready-For-Tech-Interview/blob/master/Java/%5BJava%5D%20Java%EC%9D%98%20String.md
