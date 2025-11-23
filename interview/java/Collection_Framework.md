@@ -1,5 +1,7 @@
 # Collection Framework
-  
+
 - 다수의 데이터를 다루는데 표준화된 클래스들을 제공해주기 때문에 자료구조를 직접 구현하지 않고 편하게 사용할 수 있다.
 - 널리 알려져 있는 자료구조를 바탕으로 객체, 데이터들을 효율적으로 관리 할 수 있는 자료구조들이 있는 라이브러리를 말한다.
-- List, Set, Stack, Queue는 Collection 인터페이스을 구현하지만, Map 인터페이스는 구조상의 차이로 별도로 정의한다.
+- List, Set, Stack, Queue, Map은 모두 이에 속한다. 하지만,
+  - List, Set, Stack, Queue은 Collection 인터페이스을 구현하지만, Map은 인터페이스는 구조상의 차이로 별도로 정의한다.
+  - 이는 Map이 의미상 정의가 키-값 관계를 보관하기 때문이다. 단일 요소를 보관하는 Collection과 다르다.
